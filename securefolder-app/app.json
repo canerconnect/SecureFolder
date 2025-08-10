@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "SecureFolder",
+    "slug": "securefolder",
+    "version": "1.0.0",
+    "scheme": "securefolder",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.securefolder",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library to upload files.",
+        "NSCameraUsageDescription": "We need camera access to take photos.",
+        "NSMicrophoneUsageDescription": "We need microphone access to record voice memos."
+      }
+    },
+    "android": {
+      "package": "com.example.securefolder",
+      "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "RECORD_AUDIO", "CAMERA"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "plugins": [
+      ["expo-local-authentication"],
+      ["expo-image-picker"],
+      ["expo-av"],
+      ["expo-secure-store"],
+      ["expo-file-system"]
+    ],
+    "updates": {
+      "url": "https://u.expo.dev/"
+    },
+    "assetBundlePatterns": ["**/*"]
+  }
+}
