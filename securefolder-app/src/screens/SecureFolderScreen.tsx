@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, Platform } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { ensureEncryptionKey } from '@/services/encryption';
 import { getLocalIndex } from '@/services/localStore';
@@ -17,23 +17,27 @@ export default function SecureFolderScreen({ navigation }: any) {
 
   useEffect(() => {
     (async () => {
-      const res = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Sicherer Ordner entsperren',
-        fallbackLabel: 'PIN eingeben'
-      });
-      if (res.success) {
+      if (Platform.OS === 'web') {
         setUnlocked(true);
-        await ensureEncryptionKey();
-        const idx = await getLocalIndex();
-        setCounts({
-          photosCount: idx.items.filter(i => i.type === 'image').length,
-          videosCount: idx.items.filter(i => i.type === 'video').length,
-          audioCount: idx.items.filter(i => i.type === 'audio').length,
-          documentsCount: idx.items.filter(i => i.type === 'note').length
-        });
       } else {
-        Alert.alert('Authentifizierung fehlgeschlagen');
+        const res = await LocalAuthentication.authenticateAsync({
+          promptMessage: 'Sicherer Ordner entsperren',
+          fallbackLabel: 'PIN eingeben'
+        });
+        if (!res.success) {
+          Alert.alert('Authentifizierung fehlgeschlagen');
+          return;
+        }
+        setUnlocked(true);
       }
+      await ensureEncryptionKey();
+      const idx = await getLocalIndex();
+      setCounts({
+        photosCount: idx.items.filter(i => i.type === 'image').length,
+        videosCount: idx.items.filter(i => i.type === 'video').length,
+        audioCount: idx.items.filter(i => i.type === 'audio').length,
+        documentsCount: idx.items.filter(i => i.type === 'note').length
+      });
     })();
   }, []);
 

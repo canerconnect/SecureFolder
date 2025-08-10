@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import CryptoJS from 'crypto-js';
+import { Platform } from 'react-native';
 
 const KEY_ALIAS = 'securefolder_master_key_v1';
 
@@ -10,15 +11,29 @@ const generateRandomKey = () => {
 };
 
 export const ensureEncryptionKey = async () => {
-  let key = await SecureStore.getItemAsync(KEY_ALIAS, { requireAuthentication: true });
-  if (!key) {
-    key = generateRandomKey();
-    await SecureStore.setItemAsync(KEY_ALIAS, key, { requireAuthentication: true });
+  let key: string | null = null;
+  if (Platform.OS === 'web') {
+    key = localStorage.getItem(KEY_ALIAS);
+    if (!key) {
+      key = generateRandomKey();
+      localStorage.setItem(KEY_ALIAS, key);
+    }
+  } else {
+    key = await SecureStore.getItemAsync(KEY_ALIAS, { requireAuthentication: true });
+    if (!key) {
+      key = generateRandomKey();
+      await SecureStore.setItemAsync(KEY_ALIAS, key, { requireAuthentication: true });
+    }
   }
   return key;
 };
 
 const getKey = async (): Promise<string> => {
+  if (Platform.OS === 'web') {
+    const k = localStorage.getItem(KEY_ALIAS);
+    if (!k) throw new Error('Encryption key not found');
+    return k;
+  }
   const k = await SecureStore.getItemAsync(KEY_ALIAS, { requireAuthentication: true });
   if (!k) throw new Error('Encryption key not found');
   return k;
