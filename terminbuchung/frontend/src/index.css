@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-color: 59 130 246; /* default brand (blue-500) */
+}
+
+body {
+  @apply bg-gray-50 text-gray-900;
+}
