@@ -18,6 +18,7 @@ Booking.init(
     confirmationToken: { type: DataTypes.UUID, allowNull: false, defaultValue: DataTypes.UUIDV4 },
     confirmedAt: { type: DataTypes.DATE, allowNull: true },
     canceledAt: { type: DataTypes.DATE, allowNull: true },
+    reminderSentAt: { type: DataTypes.DATE, allowNull: true },
   },
   {
     sequelize,
